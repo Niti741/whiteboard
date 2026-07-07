@@ -37,7 +37,7 @@ export const UsersList = () => {
       {/* Collaborators List */}
       <div className="flex flex-col gap-1.5">
         {users.map((u, i) => {
-          const isLocal = u.id === socket?.id;
+          const isLocal = u.id === socket?.id || u.id === 'local';
           
           // Get live tool state of this user
           const liveTool = isLocal 

@@ -74,6 +74,15 @@ export const SocketProvider = ({ children }) => {
     }
 
     // 2. Real-Time Socket Connection Session (Collaborative)
+    setUsers([
+      {
+        id: 'local',
+        username: targetUsername,
+        color: selectedColor,
+        tool: 'pencil'
+      }
+    ]);
+
     const socketInstance = io(BACKEND_URL, {
       transports: ['websocket', 'polling'],
       autoConnect: true,
@@ -216,15 +225,18 @@ export const SocketProvider = ({ children }) => {
         return resolve({ version: 1 });
       }
 
-      if (!socket || !isConnected) return reject(new Error('Socket disconnected'));
-      
-      const clientOperationId = uuidv7();
-      
       // Update locally immediately (optimistic UI)
       setElements(prev => {
         if (prev.some(el => el.id === element.id)) return prev;
         return [...prev, element];
       });
+
+      if (!socket || !isConnected) {
+        // Resolve immediately so drawing doesn't block when server is offline
+        return resolve({ version: boardVersion });
+      }
+
+      const clientOperationId = uuidv7();
 
       socket.emit('element-create', { roomId, element, clientOperationId }, (response) => {
         if (response.success) {
@@ -236,7 +248,7 @@ export const SocketProvider = ({ children }) => {
         }
       });
     });
-  }, [socket, isConnected, roomId]);
+  }, [socket, isConnected, roomId, boardVersion]);
 
   // Action: Update element
   const emitUpdate = useCallback((id, changes) => {
@@ -251,12 +263,15 @@ export const SocketProvider = ({ children }) => {
         return resolve({ version: 1 });
       }
 
-      if (!socket || !isConnected) return reject(new Error('Socket disconnected'));
+      // Update locally immediately (optimistic UI)
+      setElements(prev => prev.map(el => el.id === id ? { ...el, ...changes } : el));
+
+      if (!socket || !isConnected) {
+        return resolve({ version: boardVersion });
+      }
 
       const clientOperationId = uuidv7();
       const previousState = elementsRef.current.find(el => el.id === id);
-      
-      setElements(prev => prev.map(el => el.id === id ? { ...el, ...changes } : el));
 
       socket.emit('element-update', { roomId, id, changes, clientOperationId }, (response) => {
         if (response.success) {
@@ -270,7 +285,7 @@ export const SocketProvider = ({ children }) => {
         }
       });
     });
-  }, [socket, isConnected, roomId]);
+  }, [socket, isConnected, roomId, boardVersion]);
 
   // Action: Delete element
   const emitDelete = useCallback((id) => {
@@ -285,12 +300,15 @@ export const SocketProvider = ({ children }) => {
         return resolve({ version: 1 });
       }
 
-      if (!socket || !isConnected) return reject(new Error('Socket disconnected'));
+      // Update locally immediately (optimistic UI)
+      setElements(prev => prev.filter(el => el.id !== id));
+
+      if (!socket || !isConnected) {
+        return resolve({ version: boardVersion });
+      }
 
       const clientOperationId = uuidv7();
       const previousElement = elementsRef.current.find(el => el.id === id);
-
-      setElements(prev => prev.filter(el => el.id !== id));
 
       socket.emit('element-delete', { roomId, id, clientOperationId }, (response) => {
         if (response.success) {
@@ -304,7 +322,7 @@ export const SocketProvider = ({ children }) => {
         }
       });
     });
-  }, [socket, isConnected, roomId]);
+  }, [socket, isConnected, roomId, boardVersion]);
 
   // Action: Clear canvas
   const emitClear = useCallback(() => {
@@ -316,12 +334,15 @@ export const SocketProvider = ({ children }) => {
         return resolve({ version: 1 });
       }
 
-      if (!socket || !isConnected) return reject(new Error('Socket disconnected'));
+      // Update locally immediately (optimistic UI)
+      setElements([]);
+
+      if (!socket || !isConnected) {
+        return resolve({ version: boardVersion });
+      }
 
       const clientOperationId = uuidv7();
       const backupElements = [...elementsRef.current];
-
-      setElements([]);
 
       socket.emit('canvas-clear', { roomId, clientOperationId }, (response) => {
         if (response.success) {
@@ -333,7 +354,7 @@ export const SocketProvider = ({ children }) => {
         }
       });
     });
-  }, [socket, isConnected, roomId]);
+  }, [socket, isConnected, roomId, boardVersion]);
 
   // Action: Broadcast live cursor movement (throttled inside components)
   const emitCursor = useCallback((x, y) => {

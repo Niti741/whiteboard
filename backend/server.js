@@ -11,7 +11,7 @@ const PORT = process.env.PORT || 5000;
 
 // Enable CORS
 app.use(cors({
-  origin: process.env.CLIENT_URL || '*',
+  origin: process.env.CLIENT_URL ? process.env.CLIENT_URL.split(',') : true,
   methods: ['GET', 'POST'],
   credentials: true
 }));
@@ -33,7 +33,7 @@ const server = http.createServer(app);
 // Initialize Socket.IO
 const io = new Server(server, {
   cors: {
-    origin: process.env.CLIENT_URL || '*',
+    origin: process.env.CLIENT_URL ? process.env.CLIENT_URL.split(',') : true,
     methods: ['GET', 'POST'],
     credentials: true
   },
