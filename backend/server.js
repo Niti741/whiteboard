@@ -413,6 +413,16 @@ io.on('connection', (socket) => {
     });
   });
 
+  // Ephemeral Live Drawing Preview (before mouseup)
+  socket.on('drawing-preview', ({ roomId, userId, element }) => {
+    if (!roomId) return;
+    // Broadcast drawing preview to other room users
+    socket.to(roomId).emit('drawing-preview', {
+      userId,
+      element
+    });
+  });
+
   // 8. Ephemeral Live Cursor Metadata (Tool changed, name changed, color changed)
   socket.on('cursor-metadata', ({ roomId, tool, username, color }) => {
     if (!roomId) return;
