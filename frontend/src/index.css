@@ -1,0 +1,210 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-heading: "Outfit", system-ui, -apple-system, sans-serif;
+  
+  --color-primary: #4F46E5;
+  --color-secondary: #10B981;
+  --color-accent: #22D3EE;
+  --color-pink: #F472B6;
+  --color-lavender: #C084FC;
+  --color-success: #10B981;
+  --color-danger: #EF4444;
+  --color-warning: #F59E0B;
+  
+  --color-bg-light: #FFFFFF;
+  --color-bg-dark: #0B1020;
+}
+
+/* Custom UI styling rules */
+body {
+  font-family: var(--font-sans);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+}
+
+/* Scrollbar customizations */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(156, 163, 175, 0.2);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(156, 163, 175, 0.4);
+}
+
+/* Noise overlay background layer */
+.noise-overlay {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.02'/%3E%3C/svg%3E");
+}
+
+/* Premium frosted glassmorphism */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.dark .glass-panel {
+  background: rgba(9, 9, 11, 0.75);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+/* Laser pointer path fade animation */
+.laser-trail {
+  stroke-dasharray: 8;
+  animation: dash 1s linear infinite;
+}
+
+@keyframes dash {
+  to {
+    stroke-dashoffset: -16;
+  }
+}
+
+/* Marching ants vector selection border */
+@keyframes marching-ants {
+  0% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: 12;
+  }
+}
+
+.marching-ants {
+  stroke-dasharray: 6;
+  animation: marching-ants 0.4s linear infinite;
+}
+
+/* Smooth zoom/pan transitioning states */
+.canvas-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  touch-action: none;
+}
+
+/* Custom indicator pulses */
+.pulse-indicator {
+  position: relative;
+}
+.pulse-indicator::after {
+  content: '';
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background-color: var(--color-accent);
+  border-radius: 50%;
+  top: 0;
+  right: 0;
+  animation: pulse-ring 1.5s cubic-bezier(0.215, 0.610, 0.355, 1) infinite;
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.3);
+    opacity: 1;
+  }
+  80%, 100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+
+/* --- MOTION DESIGN & ANIMATION TOKENS --- */
+
+/* Slow drifting background orbs */
+@keyframes orb-drift-one {
+  0% { transform: translate(0px, 0px) scale(1); }
+  33% { transform: translate(40px, -60px) scale(1.15); }
+  66% { transform: translate(-30px, 30px) scale(0.9); }
+  100% { transform: translate(0px, 0px) scale(1); }
+}
+
+@keyframes orb-drift-two {
+  0% { transform: translate(0px, 0px) scale(1); }
+  50% { transform: translate(-60px, 60px) scale(1.2); }
+  100% { transform: translate(0px, 0px) scale(1); }
+}
+
+.animate-orb-1 {
+  animation: orb-drift-one 22s ease-in-out infinite;
+}
+
+.animate-orb-2 {
+  animation: orb-drift-two 28s ease-in-out infinite;
+}
+
+/* Drifting mesh background gradients */
+.mesh-gradient {
+  background: radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.15) 0px, transparent 50%),
+              radial-gradient(at 100% 0%, rgba(16, 185, 129, 0.12) 0px, transparent 50%),
+              radial-gradient(at 100% 100%, rgba(255, 255, 255, 0.8) 0px, transparent 50%),
+              radial-gradient(at 0% 100%, rgba(59, 130, 246, 0.08) 0px, transparent 50%);
+  background-size: 180% 180%;
+  animation: mesh-wave 18s ease-in-out infinite;
+}
+
+@keyframes mesh-wave {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Floating canvas doodle outlines */
+@keyframes float-doodle {
+  0% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(5deg); }
+  100% { transform: translateY(0px) rotate(0deg); }
+}
+
+.animate-float-doodle {
+  animation: float-doodle 10s ease-in-out infinite;
+}
+
+/* Active toolbar item custom glows */
+.glow-primary {
+  box-shadow: 0 0 15px rgba(99, 102, 241, 0.45);
+}
+.glow-accent {
+  box-shadow: 0 0 15px rgba(6, 182, 212, 0.45);
+}
+.glow-danger {
+  box-shadow: 0 0 15px rgba(239, 68, 68, 0.45);
+}
+
+/* Screen transition overlay fade out */
+@keyframes fade-out {
+  0% { opacity: 1; }
+  100% { opacity: 0; pointer-events: none; }
+}
+
+.animate-fade-out {
+  animation: fade-out 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Custom interactive inputs styling */
+.premium-input {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.03);
+}
+
+.premium-input:focus {
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15), inset 0 2px 4px rgba(0, 0, 0, 0.01);
+}
+
+
