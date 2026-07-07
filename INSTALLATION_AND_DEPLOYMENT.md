@@ -127,3 +127,20 @@ Vercel provides high-performance static hosting for React/Vite builds.
 5. Under **Environment Variables**, add:
    - `VITE_BACKEND_URL`: The URL of your backend deployed on Render (e.g., `https://codraw-backend.onrender.com`).
 6. Click **Deploy**. Vercel compiles the Tailwind CSS v4 assets and serves your application on a Vercel subdomain.
+
+---
+
+### 3. Frontend Client Deployment (Netlify)
+
+Netlify is another excellent option for hosting static React/Vite builds.
+
+1. Create a free account on [Netlify](https://netlify.com).
+2. Click **Add new site** -> **Import an existing project** and connect your GitHub repository.
+3. The root `netlify.toml` and `frontend/netlify.toml` files will automatically configure the build settings for Netlify:
+   - **Base directory**: `frontend`
+   - **Build command**: `npm run build`
+   - **Publish directory**: `dist`
+4. Under **Environment Variables**, add:
+   - `VITE_BACKEND_URL`: The URL of your backend deployed on Render (e.g., `https://codraw-backend.onrender.com`).
+5. Click **Deploy site**.
+
